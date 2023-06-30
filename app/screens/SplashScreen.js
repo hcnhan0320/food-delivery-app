@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, StatusBar, Image } from 'react-native';
 import { Colors, Images, Fonts } from '../constants';
 import { Display } from '../utils';
 
-const SplashScreen = () => {
+const SplashScreen = ({ navigation }) => {
+   useEffect(() => {
+      setTimeout(() => {
+         navigation.navigate('Onboarding');
+      }, 1500);
+   }, []);
+
    return (
       <View style={styles.container}>
          <StatusBar
