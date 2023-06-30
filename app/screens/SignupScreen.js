@@ -102,6 +102,7 @@ const SignupScreen = ({ navigation }) => {
          <TouchableOpacity
             style={styles.signinButton}
             // onPress={() => signIn()}
+            onPress={() => navigation.navigate('RegisterPhone')}
             activeOpacity={0.8}
          >
             {/* {isLoading ? (

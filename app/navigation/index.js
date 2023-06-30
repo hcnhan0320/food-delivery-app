@@ -8,6 +8,7 @@ import {
    SigninScreen,
    SignupScreen,
    ForgotPasswordScreen,
+   RegisterPhoneScreen,
 } from '../screens';
 
 const Stack = createStackNavigator();
@@ -16,12 +17,17 @@ const AppNav = () => {
    return (
       <NavigationContainer>
          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+               name="RegisterPhone"
+               component={RegisterPhoneScreen}
+            />
             <Stack.Screen name="SignIn" component={SigninScreen} />
+            <Stack.Screen name="SignUp" component={SignupScreen} />
             <Stack.Screen
                name="ForgotPassword"
                component={ForgotPasswordScreen}
             />
-            <Stack.Screen name="SignUp" component={SignupScreen} />
+
             <Stack.Screen name="Splash" component={SplashScreen} />
             <Stack.Screen name="Onboarding" component={OnboardingScreen} />
          </Stack.Navigator>
