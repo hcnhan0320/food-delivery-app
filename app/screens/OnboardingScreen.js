@@ -30,7 +30,7 @@ const Pagination = ({ index }) => {
    );
 };
 
-const OnboardingScreen = () => {
+const OnboardingScreen = ({ navigation }) => {
    const [onboardingIndex, setOnboardingIndex] = useState(0);
    const onboardingList = useRef();
    const onViewRef = useRef(({ changed }) => {
@@ -75,6 +75,7 @@ const OnboardingScreen = () => {
             <TouchableOpacity
                style={styles.getStartedButton}
                activeOpacity={0.6}
+               onPress={() => navigation.navigate('SignIn')}
             >
                <Text style={styles.getStartedButtonText}>Get Started</Text>
             </TouchableOpacity>
