@@ -14,7 +14,7 @@ import { Separator, ToggleButton } from '../components';
 import { Colors, Fonts, Images } from '../constants';
 import { Display } from '../utils';
 
-const ForgotPasswordScreen = () => {
+const ForgotPasswordScreen = ({ navigation }) => {
    return (
       <SafeAreaView style={styles.container}>
          <StatusBar
