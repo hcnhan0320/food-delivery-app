@@ -16,8 +16,10 @@ import { Colors, Fonts, Images } from '../constants';
 import { Display } from '../utils';
 import { AuthenticationService } from '../services';
 import AnimatedLottieView from 'lottie-react-native';
+import { connect } from 'react-redux';
+import { GeneralAction } from '../actions';
 
-const SigninScreen = ({ navigation }) => {
+const SigninScreen = ({ navigation, setToken }) => {
    const [isPasswordShow, setIsPasswordShow] = useState(false);
    const [username, setUsername] = useState('');
    const [password, setPassword] = useState('');
@@ -37,6 +39,7 @@ const SigninScreen = ({ navigation }) => {
       setIsLoading(true);
       AuthenticationService.login(user).then((response) => {
          setIsLoading(false);
+         setToken(response?.data);
          console.log(response);
          if (!response?.status) {
             setErrorMessage(response?.message);
@@ -171,7 +174,13 @@ const SigninScreen = ({ navigation }) => {
    );
 };
 
-export default SigninScreen;
+const mapDispatchToProp = (dispatch) => {
+   return {
+      setToken: (token) => dispatch(GeneralAction.setToken(token)),
+   };
+};
+
+export default connect(null, mapDispatchToProp)(SigninScreen);
 
 const styles = StyleSheet.create({
    container: {
