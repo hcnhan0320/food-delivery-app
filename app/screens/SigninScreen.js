@@ -14,9 +14,36 @@ import Feather from '@expo/vector-icons/Feather';
 import { Separator, ToggleButton } from '../components';
 import { Colors, Fonts, Images } from '../constants';
 import { Display } from '../utils';
+import { AuthenticationService } from '../services';
+import AnimatedLottieView from 'lottie-react-native';
 
 const SigninScreen = ({ navigation }) => {
    const [isPasswordShow, setIsPasswordShow] = useState(false);
+   const [username, setUsername] = useState('');
+   const [password, setPassword] = useState('');
+   const [errorMessage, setErrorMessage] = useState('');
+   const [isLoading, setIsLoading] = useState(false);
+   const [usernameErrorMessage, setUsernameErrorMessage] = useState('');
+   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+   const [usernameState, setUsernameState] = useState('default');
+   const [passwordState, setPasswordState] = useState('default');
+
+   const signIn = async () => {
+      let user = {
+         username,
+         password,
+      };
+      console.log(user);
+      setIsLoading(true);
+      AuthenticationService.login(user).then((response) => {
+         setIsLoading(false);
+         console.log(response);
+         if (!response?.status) {
+            setErrorMessage(response?.message);
+         }
+      });
+   };
+
    return (
       <SafeAreaView style={styles.container}>
          <StatusBar
@@ -50,7 +77,7 @@ const SigninScreen = ({ navigation }) => {
                   placeholderTextColor={Colors.DEFAULT_GREY}
                   selectionColor={Colors.DEFAULT_GREY}
                   style={styles.inputText}
-                  // onChangeText={(text) => setUsername(text)}
+                  onChangeText={(text) => setUsername(text)}
                />
             </View>
          </View>
@@ -69,7 +96,7 @@ const SigninScreen = ({ navigation }) => {
                   placeholderTextColor={Colors.DEFAULT_GREY}
                   selectionColor={Colors.DEFAULT_GREY}
                   style={styles.inputText}
-                  // onChangeText={text => setPassword(text)}
+                  onChangeText={(text) => setPassword(text)}
                />
                <Feather
                   name={isPasswordShow ? 'eye' : 'eye-off'}
@@ -80,7 +107,7 @@ const SigninScreen = ({ navigation }) => {
                />
             </View>
          </View>
-         <Text style={styles.errorMessage}></Text>
+         <Text style={styles.errorMessage}>{errorMessage}</Text>
          <View style={styles.forgotPasswordContainer}>
             <View style={styles.toggleContainer}>
                <ToggleButton size={0.7} />
@@ -95,15 +122,14 @@ const SigninScreen = ({ navigation }) => {
          </View>
          <TouchableOpacity
             style={styles.signinButton}
-            // onPress={() => signIn()}
+            onPress={() => signIn()}
             activeOpacity={0.8}
          >
-            {/* {isLoading ? (
-               <LottieView source={Images.LOADING} autoPlay />
+            {isLoading ? (
+               <AnimatedLottieView source={Images.LOADING} autoPlay />
             ) : (
                <Text style={styles.signinButtonText}>Sign In</Text>
-            )} */}
-            <Text style={styles.signinButtonText}>Sign In</Text>
+            )}
          </TouchableOpacity>
          <View style={styles.signupContainer}>
             <Text style={styles.accountText}>Don't have an account?</Text>
@@ -308,12 +334,12 @@ const styles = StyleSheet.create({
       alignItems: 'center',
    },
    errorMessage: {
-      fontSize: 10,
-      lineHeight: 10 * 1.4,
+      fontSize: 12,
+      lineHeight: 12 * 1.4,
       color: Colors.DEFAULT_RED,
       fontFamily: Fonts.POPPINS_MEDIUM,
       marginHorizontal: 20,
-      marginTop: 3,
+      marginTop: 5,
       marginBottom: 10,
    },
 });
