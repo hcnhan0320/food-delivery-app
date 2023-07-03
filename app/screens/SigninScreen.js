@@ -14,21 +14,23 @@ import Feather from '@expo/vector-icons/Feather';
 import { Separator, ToggleButton } from '../components';
 import { Colors, Fonts, Images } from '../constants';
 import { Display } from '../utils';
-import { AuthenticationService } from '../services';
+import { AuthenticationService, StorageService } from '../services';
 import AnimatedLottieView from 'lottie-react-native';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { GeneralAction } from '../actions';
 
-const SigninScreen = ({ navigation, setToken }) => {
+const SigninScreen = ({ navigation }) => {
    const [isPasswordShow, setIsPasswordShow] = useState(false);
    const [username, setUsername] = useState('');
    const [password, setPassword] = useState('');
    const [errorMessage, setErrorMessage] = useState('');
    const [isLoading, setIsLoading] = useState(false);
-   const [usernameErrorMessage, setUsernameErrorMessage] = useState('');
-   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-   const [usernameState, setUsernameState] = useState('default');
-   const [passwordState, setPasswordState] = useState('default');
+   // const [usernameErrorMessage, setUsernameErrorMessage] = useState('');
+   // const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+   // const [usernameState, setUsernameState] = useState('default');
+   // const [passwordState, setPasswordState] = useState('default');
+
+   const dispatch = useDispatch();
 
    const signIn = async () => {
       let user = {
@@ -39,9 +41,11 @@ const SigninScreen = ({ navigation, setToken }) => {
       setIsLoading(true);
       AuthenticationService.login(user).then((response) => {
          setIsLoading(false);
-         setToken(response?.data);
-         console.log(response);
-         if (!response?.status) {
+         if (response?.status) {
+            StorageService.setToken(response?.data).then(() => {
+               dispatch(GeneralAction.setToken(response?.data));
+            });
+         } else {
             setErrorMessage(response?.message);
          }
       });
@@ -174,13 +178,7 @@ const SigninScreen = ({ navigation, setToken }) => {
    );
 };
 
-const mapDispatchToProp = (dispatch) => {
-   return {
-      setToken: (token) => dispatch(GeneralAction.setToken(token)),
-   };
-};
-
-export default connect(null, mapDispatchToProp)(SigninScreen);
+export default SigninScreen;
 
 const styles = StyleSheet.create({
    container: {

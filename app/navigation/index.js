@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -12,22 +12,36 @@ import {
    VerificationScreen,
    HomeScreen,
 } from '../screens';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { GeneralAction } from '../actions';
 
 const Stack = createStackNavigator();
 
-const AppNav = ({ token }) => {
-   console.log(token);
+const AppNav = () => {
+   const { isAppLoading, token, isFirstTimeUse } = useSelector(
+      (state) => state?.generalState
+   );
+
+   console.log('token: ', token);
+   const dispatch = useDispatch();
+
+   useEffect(() => {
+      dispatch(GeneralAction.appStart());
+   }, []);
    return (
       <NavigationContainer>
          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            {!token ? (
+            {isAppLoading ? (
+               <Stack.Screen name="Splash" component={SplashScreen} />
+            ) : !token || token === null || token === '' ? (
                <>
-                  <Stack.Screen name="Splash" component={SplashScreen} />
-                  <Stack.Screen
-                     name="Onboarding"
-                     component={OnboardingScreen}
-                  />
+                  {isFirstTimeUse && (
+                     <Stack.Screen
+                        name="Onboarding"
+                        component={OnboardingScreen}
+                     />
+                  )}
+
                   <Stack.Screen name="SignIn" component={SigninScreen} />
                   <Stack.Screen name="SignUp" component={SignupScreen} />
                   <Stack.Screen
@@ -52,10 +66,4 @@ const AppNav = ({ token }) => {
    );
 };
 
-const mapStateToProps = (state) => {
-   return {
-      token: state.generalState.token,
-   };
-};
-
-export default connect(mapStateToProps)(AppNav);
+export default AppNav;

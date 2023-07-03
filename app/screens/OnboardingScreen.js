@@ -10,6 +10,9 @@ import { Colors, Fonts, General } from '../constants';
 import { FlatList } from 'react-native-gesture-handler';
 import { OnboardingCard, Separator } from '../components';
 import { Display } from '../utils';
+import { StorageService } from '../services';
+import { useDispatch } from 'react-redux';
+import { GeneralAction } from '../actions';
 
 const pageStyle = (isActive) =>
    isActive
@@ -44,6 +47,14 @@ const OnboardingScreen = ({ navigation }) => {
       });
    };
 
+   const dispatch = useDispatch();
+
+   const navigate = () => {
+      StorageService.setFirstTimeUse().then(() => {
+         dispatch(GeneralAction.seIsFirstTimeUse());
+      });
+   };
+
    return (
       <View style={styles.container}>
          <StatusBar
@@ -75,7 +86,7 @@ const OnboardingScreen = ({ navigation }) => {
             <TouchableOpacity
                style={styles.getStartedButton}
                activeOpacity={0.6}
-               onPress={() => navigation.navigate('SignIn')}
+               onPress={() => navigate()}
             >
                <Text style={styles.getStartedButtonText}>Get Started</Text>
             </TouchableOpacity>
