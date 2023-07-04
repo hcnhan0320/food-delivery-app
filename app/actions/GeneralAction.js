@@ -1,9 +1,11 @@
-import { StorageService } from '../services';
+import { AuthenticationService, StorageService } from '../services';
+import UserService from '../services/UserService';
 
 const types = {
    SET_IS_APP_LOADING: 'SET_IS_APP_LOADING',
    SET_TOKEN: 'SET_TOKEN',
    SET_FIRST_TIME_USE: 'SET_FIRST_TIME_USE',
+   SET_USER_DATA: 'SET_USER_DATA',
 };
 
 const setIsAppLoading = (isAppLoading) => {
@@ -20,7 +22,7 @@ const setToken = (token) => {
    };
 };
 
-const seIsFirstTimeUse = (isFirstTimeUse) => {
+const seIsFirstTimeUse = () => {
    return {
       type: types.SET_FIRST_TIME_USE,
       payload: false,
@@ -40,6 +42,50 @@ const appStart = () => {
             dispatch({
                type: types.SET_TOKEN,
                payload: token,
+            });
+            UserService.getUserData().then((userResponse) => {
+               if (userResponse?.status) {
+                  dispatch({
+                     types: types.SET_USER_DATA,
+                     payload: userResponse?.data,
+                  });
+                  dispatch({
+                     types: types.SET_IS_APP_LOADING,
+                     payload: false,
+                  });
+               } else if (
+                  userResponse?.error?.message === 'TokenExpiredError'
+               ) {
+                  AuthenticationService.refreshToken().then((tokenResponse) => {
+                     if (tokenResponse?.status) {
+                        dispatch({
+                           types: types.SET_TOKEN,
+                           payload: tokenResponse?.data,
+                        });
+                        UserService.getUserData().then((userResponse) => {
+                           if (userResponse?.status) {
+                              dispatch({
+                                 types: types.SET_USER_DATA,
+                                 payload: userResponse?.data,
+                              });
+                              dispatch({
+                                 types: types.SET_IS_APP_LOADING,
+                                 payload: false,
+                              });
+                           }
+                        });
+                     }
+                  });
+               } else {
+                  dispatch({
+                     types: types.SET_TOKEN,
+                     payload: '',
+                  });
+                  dispatch({
+                     types: types.SET_IS_APP_LOADING,
+                     payload: false,
+                  });
+               }
             });
          }
       });

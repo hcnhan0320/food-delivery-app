@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { ApiConstants } from '../constants';
+import { authHeader } from '../utils/Generator';
+import { getToken } from '../Store';
 
 const AuthRequest = axios.create({
    baseURL: ApiConstants.BACKEND_API.BASE_URL,
@@ -64,4 +66,25 @@ const checkUserExist = async (type, value) => {
    }
 };
 
-export default { login, register, checkUserExist };
+const refreshToken = async () => {
+   try {
+      let tokenResponse = await AuthRequest.get(
+         ApiConstants.BACKEND_API.REFRESH_TOKEN,
+         { headers: authHeader(getToken()) }
+      );
+      if (tokenResponse?.status === 200) {
+         return {
+            status: true,
+            data: tokenResponse?.data,
+         };
+      } else {
+         return {
+            status: false,
+         };
+      }
+   } catch (error) {
+      console.log(error);
+      return { status: false, message: 'Something went wrong' };
+   }
+};
+export default { login, register, checkUserExist, refreshToken };
