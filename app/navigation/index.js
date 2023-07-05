@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
@@ -22,7 +21,6 @@ const AppNav = () => {
       (state) => state?.generalState
    );
 
-   console.log('token: ', token);
    const dispatch = useDispatch();
 
    useEffect(() => {
@@ -52,7 +50,6 @@ const AppNav = () => {
                      name="ForgotPassword"
                      component={ForgotPasswordScreen}
                   />
-
                   <Stack.Screen
                      name="Verification"
                      component={VerificationScreen}

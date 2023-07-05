@@ -47,6 +47,7 @@ const appStart = () => {
                payload: token,
             });
             UserService.getUserData().then((userResponse) => {
+               console.log(userResponse?.data);
                if (userResponse?.status) {
                   dispatch({
                      types: types.SET_USER_DATA,
@@ -56,9 +57,7 @@ const appStart = () => {
                      types: types.SET_IS_APP_LOADING,
                      payload: false,
                   });
-               } else if (
-                  userResponse?.error?.message === 'TokenExpiredError'
-               ) {
+               } else if (userResponse?.message === 'TokenExpiredError') {
                   AuthenticationService.refreshToken().then((tokenResponse) => {
                      if (tokenResponse?.status) {
                         dispatch({
