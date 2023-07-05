@@ -1,5 +1,8 @@
-import { AuthenticationService, StorageService } from '../services';
-import UserService from '../services/UserService';
+import {
+   AuthenticationService,
+   StorageService,
+   UserService,
+} from '../services';
 
 const types = {
    SET_IS_APP_LOADING: 'SET_IS_APP_LOADING',

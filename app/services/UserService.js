@@ -15,6 +15,7 @@ const getUserData = async () => {
          }
       );
       if (userResponse?.status === 200) {
+         console.log(userResponse?.data);
          return {
             status: true,
             message: `User data fetched`,
