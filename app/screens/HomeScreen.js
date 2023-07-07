@@ -45,7 +45,6 @@ const HomeScreen = ({ navigation }) => {
       const unsubscribe = navigation.addListener('focus', () => {
          RestaurantService.getRestaurants().then((response) => {
             if (response?.status) {
-               console.log(response?.data);
                setRestaurants(response?.data);
             }
          });
@@ -128,7 +127,14 @@ const HomeScreen = ({ navigation }) => {
                   ListHeaderComponent={() => <Separator width={20} />}
                   ListFooterComponent={() => <Separator width={20} />}
                   ItemSeparatorComponent={() => <Separator width={10} />}
-                  renderItem={({ item }) => <RestaurantCard {...item} />}
+                  renderItem={({ item }) => (
+                     <RestaurantCard
+                        {...item}
+                        navigate={(restaurantId) =>
+                           navigation.navigate('Restaurant', { restaurantId })
+                        }
+                     />
+                  )}
                />
             </View>
             <View style={styles.sortListContainer}>
