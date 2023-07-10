@@ -9,6 +9,8 @@ import VerificationScreen from './VerificationScreen';
 import HomeScreen from './HomeScreen';
 import RestaurantScreen from './RestaurantScreen';
 
+import CartScreen from './CartScreen';
+
 export {
    SplashScreen,
    OnboardingScreen,
@@ -19,4 +21,5 @@ export {
    VerificationScreen,
    HomeScreen,
    RestaurantScreen,
+   CartScreen,
 };

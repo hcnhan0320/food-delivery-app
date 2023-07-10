@@ -1,8 +1,6 @@
-import {
-   AuthenticationService,
-   StorageService,
-   UserService,
-} from '../services';
+import { AuthenicationService, StorageService } from '../services';
+import UserService from '../services/UserService';
+import CartAction from './CartAction';
 
 const types = {
    SET_IS_APP_LOADING: 'SET_IS_APP_LOADING',
@@ -25,10 +23,17 @@ const setToken = (token) => {
    };
 };
 
-const seIsFirstTimeUse = () => {
+const setIsFirstTimeUse = () => {
    return {
       type: types.SET_FIRST_TIME_USE,
       payload: false,
+   };
+};
+
+const setUserData = (userData) => {
+   return {
+      type: types.SET_USER_DATA,
+      payload: userData,
    };
 };
 
@@ -47,55 +52,63 @@ const appStart = () => {
                payload: token,
             });
             UserService.getUserData().then((userResponse) => {
-               console.log(userResponse?.data);
                if (userResponse?.status) {
                   dispatch({
-                     types: types.SET_USER_DATA,
+                     type: types.SET_USER_DATA,
                      payload: userResponse?.data,
                   });
+                  dispatch(CartAction.getCartItems());
+                  // dispatch(BookmarkAction.getBookmarks());
                   dispatch({
-                     types: types.SET_IS_APP_LOADING,
+                     type: types.SET_IS_APP_LOADING,
                      payload: false,
                   });
                } else if (userResponse?.message === 'TokenExpiredError') {
-                  AuthenticationService.refreshToken().then((tokenResponse) => {
+                  AuthenicationService.refreshToken().then((tokenResponse) => {
                      if (tokenResponse?.status) {
                         dispatch({
-                           types: types.SET_TOKEN,
+                           type: types.SET_TOKEN,
                            payload: tokenResponse?.data,
                         });
                         UserService.getUserData().then((userResponse) => {
                            if (userResponse?.status) {
                               dispatch({
-                                 types: types.SET_USER_DATA,
+                                 type: types.SET_USER_DATA,
                                  payload: userResponse?.data,
                               });
                               dispatch({
-                                 types: types.SET_IS_APP_LOADING,
+                                 type: types.SET_IS_APP_LOADING,
                                  payload: false,
                               });
                            }
                         });
+                     } else {
+                        dispatch({
+                           type: types.SET_TOKEN,
+                           payload: '',
+                        });
+                        dispatch({
+                           type: types.SET_IS_APP_LOADING,
+                           payload: false,
+                        });
                      }
-                  });
-               } else {
-                  dispatch({
-                     types: types.SET_TOKEN,
-                     payload: '',
-                  });
-                  dispatch({
-                     types: types.SET_IS_APP_LOADING,
-                     payload: false,
                   });
                }
             });
          }
-      });
-      dispatch({
-         type: types.SET_IS_APP_LOADING,
-         payload: false,
+         dispatch({
+            type: types.SET_IS_APP_LOADING,
+            payload: false,
+         });
       });
    };
 };
 
-export default { setIsAppLoading, setToken, seIsFirstTimeUse, appStart, types };
+export default {
+   setIsAppLoading,
+   setToken,
+   appStart,
+   setIsFirstTimeUse,
+   setUserData,
+   types,
+};
